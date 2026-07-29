@@ -1,0 +1,66 @@
+---
+// 左侧目录：桌面端竖排吸顶，手机端自动变横向吸顶标签
+import type { NavCategory } from "../../data/nav";
+
+interface Props {
+    categories: NavCategory[];
+}
+const { categories } = Astro.props;
+---
+
+<aside
+    class="sticky top-0 z-20 -mx-4 bg-paper px-4 lg:top-10 lg:z-auto lg:mx-0 lg:self-start lg:bg-transparent lg:px-0"
+>
+    <p
+        class="hidden items-center gap-3 pb-4 font-mono text-[11px] uppercase tracking-[0.3em] text-ink/40 lg:flex"
+    >
+        目录 <span class="h-px flex-1 bg-ink/15"></span> Index
+    </p>
+
+    <ul
+        class="flex gap-2 overflow-x-auto py-3 scrollbar-none [&::-webkit-scrollbar]:hidden lg:flex-col lg:gap-1 lg:overflow-visible lg:py-0"
+    >
+        {
+            categories.map((cat, i) => (
+                <li class="shrink-0 lg:shrink">
+                    <a
+                        href={`#${cat.id}`}
+                        class="side-link flex items-center gap-2 whitespace-nowrap border border-ink/20 bg-white px-3 py-1.5 font-mono text-xs text-ink/70 transition-all duration-200 hover:text-accent lg:border-0 lg:border-l-2 lg:border-ink/15 lg:bg-transparent lg:px-1 lg:py-2 lg:pl-3 lg:text-sm"
+                    >
+                        <span class="text-[10px] text-ink/35 lg:text-xs">
+                            {String(i + 1).padStart(2, "0")}
+                        </span>
+                        {cat.name}
+                        <span class="ml-1 text-[10px] opacity-50 lg:ml-auto lg:text-xs">
+                            {cat.links.length}
+                        </span>
+                    </a>
+                </li>
+            ))
+        }
+    </ul>
+
+    <div class="mt-6 hidden border-t border-ink/15 pt-4 lg:block">
+        <a
+            href="#top"
+            class="font-mono text-xs text-ink/40 transition-colors hover:text-accent"
+            >↑ 回到顶部</a
+        >
+    </div>
+</aside>
+
+<style>
+    /* 滚动到对应盒子时，由 NavLayout 脚本切换该状态 */
+    .side-active {
+        border-color: var(--color-accent);
+        color: var(--color-accent);
+        background: color-mix(in srgb, var(--color-accent) 7%, transparent);
+    }
+    @media (min-width: 1024px) {
+        .side-active {
+            background: transparent;
+            border-left-color: var(--color-accent);
+            transform: translateX(3px);
+        }
+    }
+</style>

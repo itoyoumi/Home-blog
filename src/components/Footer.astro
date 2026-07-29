@@ -1,16 +1,108 @@
 ---
-import Social from "./Social.astro";
+// 全站底栏：反色墨块，和页面的"盒子"语言呼应
+const siteName = "MRDENG";
+
+const pages = [
+    { label: "首页", href: "/" },
+    { label: "导航", href: "/nav" },
+    { label: "关于", href: "/about" },
+];
+
+const socials = [
+    { label: "GitHub", href: "https://github.com/" },
+    { label: "Email", href: "mailto:you@example.com" },
+    { label: "RSS", href: "/rss.xml" },
+];
 ---
 
-<footer>
-    <Social platform="twitter" username="astrodotbuild" />
-    <Social platform="github" username="withastro" />
-    <Social platform="youtube" username="astrodotbuild" />
+<footer class="relative mt-24 border-t-2 border-ink bg-ink text-paper">
+    <div
+        class="dot-grid-light pointer-events-none absolute inset-0"
+        aria-hidden="true"
+    >
+    </div>
+
+    <div class="relative mx-auto max-w-6xl px-4 py-14 sm:px-6">
+        <div class="grid gap-10 md:grid-cols-[1.4fr_1fr_1fr]">
+            <div>
+                <p class="font-display text-3xl font-bold">
+                    {siteName}<span class="text-accent">.</span>
+                </p>
+                <p class="mt-3 max-w-xs text-sm leading-relaxed text-paper/60">
+                    写代码，也写点别的。这里是我的记录角落和链接抽屉。
+                </p>
+            </div>
+
+            <nav>
+                <p
+                    class="font-mono text-[11px] uppercase tracking-[0.3em] text-paper/40"
+                >
+                    页面
+                </p>
+                <ul class="mt-4 space-y-2.5">
+                    {
+                        pages.map((p) => (
+                            <li>
+                                <a
+                                    href={p.href}
+                                    class="group inline-flex items-center gap-2 text-sm text-paper/75 transition-colors hover:text-accent"
+                                >
+                                    <span class="h-px w-3 bg-paper/30 transition-all duration-200 group-hover:w-5 group-hover:bg-accent" />
+                                    {p.label}
+                                </a>
+                            </li>
+                        ))
+                    }
+                </ul>
+            </nav>
+
+            <div>
+                <p
+                    class="font-mono text-[11px] uppercase tracking-[0.3em] text-paper/40"
+                >
+                    联系
+                </p>
+                <ul class="mt-4 space-y-2.5">
+                    {
+                        socials.map((s) => (
+                            <li>
+                                <a
+                                    href={s.href}
+                                    target="_blank"
+                                    rel="noopener noreferrer"
+                                    class="group inline-flex items-center gap-2 text-sm text-paper/75 transition-colors hover:text-accent"
+                                >
+                                    <span class="h-px w-3 bg-paper/30 transition-all duration-200 group-hover:w-5 group-hover:bg-accent" />
+                                    {s.label}
+                                    <span class="text-[10px] text-paper/30 transition-all group-hover:translate-x-0.5 group-hover:text-accent">
+                                        ↗
+                                    </span>
+                                </a>
+                            </li>
+                        ))
+                    }
+                </ul>
+            </div>
+        </div>
+
+        <div
+            class="mt-12 flex flex-wrap items-center justify-between gap-4 border-t border-paper/15 pt-6 font-mono text-xs text-paper/40"
+        >
+            <p>© 2026 {siteName} · Built with Astro</p>
+            <a href="#top" class="transition-colors hover:text-accent"
+                >↑ 回到顶部</a
+            >
+        </div>
+    </div>
+
+    <style>
+        .dot-grid-light {
+            background-image: radial-gradient(
+                circle,
+                rgb(255 255 255 / 0.06) 1px,
+                transparent 1px
+            );
+            background-size: 18px 18px;
+        }
+    </style>
 </footer>
-<style>
-    footer {
-        display: flex;
-        gap: 1rem;
-        margin-top: 2rem;
-    }
-</style>

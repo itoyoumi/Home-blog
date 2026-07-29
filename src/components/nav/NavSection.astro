@@ -1,0 +1,39 @@
+---
+// 右侧盒子：深色标题条 + 卡片网格，链接越多盒子自动越高
+import type { NavCategory } from "../../data/nav";
+import NavLinkCard from "./NavLinkCard.astro";
+
+interface Props {
+    category: NavCategory;
+    index: number;
+}
+const { category, index } = Astro.props;
+---
+
+<section
+    id={category.id}
+    data-section
+    class="reveal scroll-mt-20 border-2 border-ink bg-white shadow-[7px_7px_0_0_var(--color-ink)] lg:scroll-mt-10"
+>
+    <header
+        class="flex items-center gap-3 border-b-2 border-ink bg-ink px-5 py-3 text-paper"
+    >
+        <span class="font-mono text-sm font-bold text-accent"
+            >{String(index + 1).padStart(2, "0")}</span
+        >
+        <h2 class="font-display text-xl font-bold">{category.name}</h2>
+        <span
+            class="font-mono text-[10px] uppercase tracking-[0.3em] text-paper/50"
+            >{category.en}</span
+        >
+        <span
+            class="ml-auto border border-paper/25 px-2 py-0.5 font-mono text-[11px] text-paper/70"
+        >
+            {category.links.length} links
+        </span>
+    </header>
+
+    <ul class="grid gap-4 p-5 sm:grid-cols-2 xl:grid-cols-3">
+        {category.links.map((link, i) => <NavLinkCard {link} index={i} />)}
+    </ul>
+</section>

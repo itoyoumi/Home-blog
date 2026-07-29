@@ -1,5 +1,145 @@
 ---
-import Layout from "../layouts/Layout.astro";
+import Layout from '../layouts/Layout.astro';
+import { navCategories, totalLinks } from '../data/nav';
+
+// 占位数据 —— 之后接入 Content Collections 后替换这里
+const recentPosts = [
+  { title: '用 Astro 重写我的博客', date: '2026-07-28', tag: '构建', href: '#' },
+  { title: '我常用的 AI 工具清单', date: '2026-07-20', tag: 'AI', href: '#' },
+  { title: '导航页的设计思路', date: '2026-07-12', tag: '设计', href: '#' },
+];
 ---
 
-<Layout />
+<Layout title="首页 · MRDENG" description="写代码，也写点别的。">
+  <!-- ===== 开场：大标题 + 状态卡 ===== -->
+  <section class="relative border-b-2 border-ink">
+    <div class="dot-grid pointer-events-none absolute inset-0" aria-hidden="true"></div>
+
+    <div class="relative grid gap-10 py-14 sm:py-20 lg:grid-cols-[minmax(0,1fr)_300px] lg:items-center">
+      <div>
+        <p class="reveal flex items-center gap-2.5 font-mono text-xs uppercase tracking-[0.35em] text-ink/45">
+          <span class="relative flex h-2 w-2">
+            <span class="absolute h-full w-full animate-ping bg-accent opacity-70"></span>
+            <span class="relative h-2 w-2 bg-accent"></span>
+          </span>
+          Personal Site · Est. 2026
+        </p>
+
+        <h1 class="reveal mt-6 font-display text-6xl leading-[0.95] font-bold sm:text-7xl lg:text-8xl" style="--i:1">
+          写代码，<br />
+          也写点<span class="text-accent">别的</span><span class="cursor-blink text-accent">_</span>
+        </h1>
+
+        <p class="reveal mt-6 max-w-md leading-relaxed text-ink/60" style="--i:2">
+          记录构建、AI 与零碎想法，顺手收了一抽屉好用的链接。
+        </p>
+
+        <div class="reveal mt-9 flex flex-wrap gap-4" style="--i:3">
+          <a
+            href="/nav"
+            class="border-2 border-ink bg-accent px-6 py-3 font-display text-sm font-bold text-white shadow-[5px_5px_0_0_var(--color-ink)] transition-all duration-150 hover:-translate-y-0.5 hover:shadow-[7px_7px_0_0_var(--color-ink)] active:translate-y-0 active:shadow-[3px_3px_0_0_var(--color-ink)]"
+          >
+            逛逛导航 ↗
+          </a>
+          <a
+            href="#posts"
+            class="border-2 border-ink bg-white px-6 py-3 font-display text-sm font-bold shadow-[5px_5px_0_0_var(--color-ink)] transition-all duration-150 hover:-translate-y-0.5 hover:shadow-[7px_7px_0_0_var(--color-ink)] active:translate-y-0 active:shadow-[3px_3px_0_0_var(--color-ink)]"
+          >
+            最近记录 ↓
+          </a>
+        </div>
+      </div>
+
+      <!-- STATUS 状态卡：活时钟 -->
+      <aside class="reveal w-full max-w-75 border-2 border-ink bg-white shadow-[7px_7px_0_0_var(--color-ink)] transition-transform duration-300 lg:rotate-[1.5deg] lg:hover:rotate-0" style="--i:2">
+        <div class="flex items-center justify-between border-b-2 border-ink bg-ink px-4 py-2 text-paper">
+          <span class="font-mono text-[11px] tracking-[0.3em]">STATUS</span>
+          <span class="flex items-center gap-1.5 font-mono text-[11px] text-accent">
+            <span class="relative flex h-1.5 w-1.5">
+              <span class="absolute h-full w-full animate-ping bg-accent opacity-70"></span>
+              <span class="relative h-1.5 w-1.5 bg-accent"></span>
+            </span>
+            ONLINE
+          </span>
+        </div>
+        <div class="p-5">
+          <p class="font-mono text-[11px] text-ink/45">LOCAL TIME</p>
+          <p data-clock class="mt-1 font-mono text-3xl font-bold tabular-nums">--:--:--</p>
+          <div class="mt-4 flex items-end justify-between border-t border-ink/10 pt-3">
+            <div>
+              <p class="font-mono text-[11px] text-ink/45">DATE</p>
+              <p data-clock="date" class="mt-1 font-mono text-sm tabular-nums">----------</p>
+            </div>
+            <div class="text-right">
+              <p class="font-mono text-[11px] text-ink/45">BUILD</p>
+              <p class="mt-1 font-mono text-sm">v2.0 · ASTRO</p>
+            </div>
+          </div>
+        </div>
+      </aside>
+    </div>
+
+    <style>
+      .dot-grid {
+        background-image: radial-gradient(circle, color-mix(in srgb, var(--color-ink) 12%, transparent) 1px, transparent 1px);
+        background-size: 18px 18px;
+        mask-image: linear-gradient(to bottom, black 40%, transparent);
+      }
+      .cursor-blink { animation: blink 1.1s steps(1) infinite; }
+      @keyframes blink { 50% { opacity: 0; } }
+    </style>
+  </section>
+
+  <!-- ===== 01 导航速览：列表式，悬停整行反色 ===== -->
+  <section class="py-14">
+    <div class="reveal mb-6 flex items-baseline gap-4">
+      <span class="font-mono text-sm font-bold text-accent">01</span>
+      <h2 class="font-display text-3xl font-bold">导航速览</h2>
+      <span class="h-0.5 flex-1 self-center bg-ink/15"></span>
+      <a href="/nav" class="font-mono text-xs whitespace-nowrap text-ink/50 transition-colors hover:text-accent">
+        全部 {totalLinks} 个 →
+      </a>
+    </div>
+
+    <ul class="reveal border-2 border-ink bg-white shadow-[7px_7px_0_0_var(--color-ink)]" style="--i:1">
+      {navCategories.map((cat, i) => (
+        <li class="border-b-2 border-ink last:border-b-0">
+          <a href={`/nav#${cat.id}`} class="group flex items-center gap-4 px-5 py-4 transition-colors duration-150 hover:bg-ink hover:text-paper sm:gap-6">
+            <span class="font-mono text-sm font-bold text-accent">{String(i + 1).padStart(2, '0')}</span>
+            <span class="font-display text-lg font-bold">{cat.name}</span>
+            <span class="hidden font-mono text-[10px] uppercase tracking-[0.25em] text-ink/35 group-hover:text-paper/40 sm:inline">{cat.en}</span>
+            <span class="ml-auto font-mono text-xs text-ink/40 group-hover:text-paper/60">{cat.links.length} links</span>
+            <span class="text-ink/25 transition-transform duration-150 group-hover:translate-x-1 group-hover:text-accent">→</span>
+          </a>
+        </li>
+      ))}
+    </ul>
+  </section>
+
+  <!-- ===== 02 最近记录 ===== -->
+  <section id="posts" class="scroll-mt-20 pb-20">
+    <div class="reveal mb-6 flex items-baseline gap-4">
+      <span class="font-mono text-sm font-bold text-accent">02</span>
+      <h2 class="font-display text-3xl font-bold">最近记录</h2>
+      <span class="h-0.5 flex-1 self-center bg-ink/15"></span>
+      <span class="font-mono text-xs whitespace-nowrap text-ink/35">RSS · soon</span>
+    </div>
+
+    <ul class="reveal border-2 border-ink bg-white shadow-[7px_7px_0_0_var(--color-ink)]" style="--i:1">
+      {recentPosts.map((post, i) => (
+        <li class="reveal border-b border-ink/10 last:border-b-0" style={`--i:${i}`}>
+          <a href={post.href} class="group relative flex items-center gap-4 px-5 py-4 transition-colors hover:bg-paper sm:gap-6">
+            <!-- 左侧强调条，悬停时从下往上展开 -->
+            <span class="absolute inset-y-0 left-0 w-1 origin-bottom scale-y-0 bg-accent transition-transform duration-200 group-hover:scale-y-100"></span>
+            <time class="w-20 shrink-0 font-mono text-xs tabular-nums text-ink/40">{post.date}</time>
+            <h3 class="font-display font-bold transition-colors group-hover:text-accent">{post.title}</h3>
+            <span class="ml-auto shrink-0 border border-ink/20 px-2 py-0.5 font-mono text-[10px] text-ink/50">{post.tag}</span>
+            <span class="shrink-0 text-ink/25 transition-all group-hover:translate-x-0.5 group-hover:text-accent">↗</span>
+          </a>
+        </li>
+      ))}
+    </ul>
+
+    <p class="reveal mt-6 font-mono text-xs text-ink/35" style="--i:2">// 文章系统搭建中，先放几个占位</p>
+  </section>
+</Layout>

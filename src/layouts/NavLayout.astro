@@ -1,0 +1,79 @@
+---
+import Layout from "./Layout.astro";
+
+interface Props {
+    title?: string;
+    description?: string;
+}
+const {
+    title = "导航 · 链接收藏",
+    description = "我收集的 AI 官网、开发文档、博客与常用工具",
+} = Astro.props;
+---
+
+<Layout {title} {description} wide>
+    <div
+        id="nav-progress"
+        class="fixed inset-x-0 top-0 z-50 h-0.5 origin-left scale-x-0 bg-accent"
+    >
+    </div>
+
+    <slot />
+
+    <script>
+        const $$ = <T extends HTMLElement>(s: string) =>
+            Array.from(document.querySelectorAll<T>(s));
+        const reduceMotion = matchMedia(
+            "(prefers-reduced-motion: reduce)",
+        ).matches;
+
+        /* 1. 滚动进度条 */
+        const bar = document.getElementById("nav-progress");
+        if (bar) {
+            const onScroll = () => {
+                const max = document.documentElement.scrollHeight - innerHeight;
+                bar.style.transform = `scaleX(${max > 0 ? scrollY / max : 0})`;
+            };
+            addEventListener("scroll", onScroll, { passive: true });
+            onScroll();
+        }
+
+        /* 2. 目录滚动高亮 */
+        const links = $$(".side-link");
+        const sections = $$("[data-section]");
+        if (links.length && sections.length) {
+            const setActive = (id: string) =>
+                links.forEach((l) =>
+                    l.classList.toggle(
+                        "side-active",
+                        l.getAttribute("href") === `#${id}`,
+                    ),
+                );
+            const io = new IntersectionObserver(
+                (entries) =>
+                    entries.forEach(
+                        (en) => en.isIntersecting && setActive(en.target.id),
+                    ),
+                { rootMargin: "-15% 0px -70% 0px" },
+            );
+            sections.forEach((s) => io.observe(s));
+        }
+
+        /* 3. 统计数字滚动 */
+        $$<HTMLElement>("[data-count]").forEach((el) => {
+            const target = Number(el.dataset.count ?? 0);
+            if (reduceMotion) return;
+            const t0 = performance.now();
+            const dur = 900;
+            const tick = (t: number) => {
+                const p = Math.min((t - t0) / dur, 1);
+                el.textContent = String(
+                    Math.round(target * (1 - Math.pow(1 - p, 3))),
+                );
+                if (p < 1) requestAnimationFrame(tick);
+            };
+            el.textContent = "0";
+            requestAnimationFrame(tick);
+        });
+    </script>
+</Layout>

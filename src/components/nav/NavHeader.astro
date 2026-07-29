@@ -1,0 +1,71 @@
+---
+// 页头：状态行 + 大标题 + 统计数字
+interface Props {
+    categoryCount: number;
+    totalLinks: number;
+}
+const { categoryCount, totalLinks } = Astro.props;
+---
+
+<header id="top" class="relative scroll-mt-10 border-b-4 border-ink pb-8 pt-10">
+    <!-- 点阵背景，向下淡出 -->
+    <div
+        class="dot-grid pointer-events-none absolute inset-0"
+        aria-hidden="true"
+    >
+    </div>
+
+    <p
+        class="reveal relative flex items-center gap-2.5 font-mono text-xs uppercase tracking-[0.35em] text-ink/45"
+    >
+        <span class="relative flex h-2 w-2">
+            <span
+                class="absolute h-full w-full animate-ping bg-accent opacity-70"
+            ></span>
+            <span class="relative h-2 w-2 bg-accent"></span>
+        </span>
+        Open Directory · 持续收录中
+    </p>
+
+    <div
+        class="relative mt-5 flex flex-wrap items-end justify-between gap-x-10 gap-y-6"
+    >
+        <h1 class="font-display text-6xl leading-[0.95] font-bold sm:text-7xl">
+            链接<span class="text-accent">导航</span><span class="text-accent"
+                >.</span
+            >
+        </h1>
+        <dl class="flex gap-8 font-mono">
+            <div>
+                <dt class="text-xs text-ink/45">分类</dt>
+                <dd
+                    data-count={categoryCount}
+                    class="text-3xl font-bold text-accent"
+                >
+                    {categoryCount}
+                </dd>
+            </div>
+            <div>
+                <dt class="text-xs text-ink/45">链接</dt>
+                <dd
+                    data-count={totalLinks}
+                    class="text-3xl font-bold text-accent"
+                >
+                    {totalLinks}
+                </dd>
+            </div>
+        </dl>
+    </div>
+
+    <style>
+        .dot-grid {
+            background-image: radial-gradient(
+                circle,
+                color-mix(in srgb, var(--color-ink) 14%, transparent) 1px,
+                transparent 1px
+            );
+            background-size: 18px 18px;
+            mask-image: linear-gradient(to bottom, black 30%, transparent);
+        }
+    </style>
+</header>

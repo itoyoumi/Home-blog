@@ -1,0 +1,25 @@
+---
+// 组装层：数据 → 组件，本文件基本永远不用改
+import NavLayout from "../layouts/NavLayout.astro";
+import NavHeader from "../components/nav/NavHeader.astro";
+import NavSidebar from "../components/nav/NavSidebar.astro";
+import NavSection from "../components/nav/NavSection.astro";
+import { navCategories, totalLinks } from "../data/nav";
+---
+
+<NavLayout>
+    <NavHeader categoryCount={navCategories.length} totalLinks={totalLinks} />
+
+    <div
+        class="mt-10 pb-20 lg:grid lg:grid-cols-[210px_minmax(0,1fr)] lg:gap-10"
+    >
+        <NavSidebar categories={navCategories} />
+        <div class="mt-6 space-y-12 lg:mt-0">
+            {
+                navCategories.map((category, index) => (
+                    <NavSection {category} {index} />
+                ))
+            }
+        </div>
+    </div>
+</NavLayout>
